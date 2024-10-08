@@ -1,7 +1,7 @@
 ---
 title: "CSDE Workshop-Intro to R II: Working with Data"
 author: "Jessica Godwin"
-date: "October 25, 2023"
+date: "October 8, 2024"
 output: 
  html_document:
    toc: true
@@ -19,7 +19,7 @@ What is `R`? Open-source, free, stastical computing software.
 
 Go to the [R website](https://cran.r-project.org/), and download the appropriate software for your operating system.
 
-![](R1.png)
+![](Figures/R1.png)
 
 ## Download RStudio
 
@@ -27,7 +27,7 @@ What is Rstudio? A nice GUI (graphical user interface) for writing code, analyzi
 
 Go to the [RStudio website](https://rstudio.com/products/rstudio/download/#download). and download the appropriate software for your operating system.
 
-![](Rstudio.png)
+![](Figures/Rstudio.png)
 
 ## Rstudio Layout
 
@@ -38,7 +38,7 @@ Rstudio has four main panels that allow you to organize your code and have a bet
   * Environment panel: where objects are stored
   * Files/Plots/Help: navigate files and folders, view plots, read and access help documentation for packages and functions
 
-![](RstudioPanel.png)
+![](Figures/RstudioPanel.png)
 
 # R Markdown
 
@@ -46,11 +46,11 @@ Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word docu
 
 Go to File $\rightarrow$ New File $\rightarrow$ R Markdown. Select `Knit to HTML`
 
-![](KnitToHtml.png)
+![](Figures/KnitToHtml.png)
 
 It will open up a new template .Rmd file for you to begin editing that will look like this:\
 
-![](NewRmd.png)
+![](Figures/NewRmd.png)
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
@@ -129,11 +129,11 @@ To open files in `R` we need to specify the directory our data files are stored 
 
 Rstudio shows you what your current working directory is by looking at the file path at the top of the Console pane. **Note:** `~` refers to your home directory.
 
-![](wd_console.png)
+![](Figures/wd_console.png)
 
 You can also find out what's in your working directory OR navigate to and specify the folder you would like to be your working directory in the Files/Plots/Packages/Help/Viewer/Presentation pane.
 
-![](setwd_files.png)
+![](Figures/setwd_files.png)
 
 You can set your working directory manually in the Console or in a .R script with the function `setwd()`. The function `getwd()` will show you the current working directory.
 
