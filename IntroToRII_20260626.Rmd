@@ -1,7 +1,7 @@
 ---
 title: "CSDE Workshop-Intro to R II: Working with Data"
 author: "Jessica Godwin"
-date: "October 8, 2024"
+date: "June 23, 2026"
 output: 
  html_document:
    toc: true
