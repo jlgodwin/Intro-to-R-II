@@ -11,7 +11,7 @@
 
 <meta name="author" content="Jessica Godwin" />
 
-<meta name="date" content="2026-06-23" />
+<meta name="date" content="2026-10-27" />
 
 <title>CSDE Workshop-Intro to R II: Working with Data</title>
 
@@ -353,7 +353,7 @@ display: none;
 <h1 class="title toc-ignore">CSDE Workshop-Intro to R II: Working with
 Data</h1>
 <h4 class="author">Jessica Godwin</h4>
-<h4 class="date">June 23, 2026</h4>
+<h4 class="date">October 27, 2026</h4>
 
 </div>
 
@@ -607,7 +607,10 @@ contents are the row names of the object saved using
 <pre class="r"><code>?read.csv
 pets &lt;- read.csv(&quot;Seattle_Pet_Licenses.csv&quot;)
 write.csv(pets, file = &#39;Seattle_Pets_copy.csv&#39;,
-          row.names = FALSE) </code></pre>
+          row.names = FALSE) 
+
+library(data.table)
+fwrite(as.data.table(pets), file = &quot;Seattle_Pets_dt.csv&quot;)</code></pre>
 </div>
 <div id="read-and-write-r-data-files-.rda" class="section level2">
 <h2>Read and Write R data files, .rda</h2>
@@ -625,8 +628,8 @@ names(pets_copy)</code></pre>
 # three_names[grepl(&quot;e&quot;, three_names)]
 ## The \\ is called an &quot;escape&quot;, so that R recognizes the period
 names(pets_copy) &lt;- gsub(&quot;\\.&quot;, &quot;&quot;, names(pets_copy))
-save(pets_copy, file = &#39;SeattlePets.rda&#39;) 
-rm(pets_copy) </code></pre>
+save(pets_copy, pets, file = &#39;SeattlePets.rda&#39;) 
+rm(pets_copy, pets) </code></pre>
 <p>What is the name of the data set that loaded by the line of code
 below?</p>
 <pre class="r"><code>load(&#39;SeattlePets.rda&#39;) </code></pre>
@@ -686,6 +689,9 @@ library(tidyr)
 library(dplyr)</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:data.table&#39;:
+## 
+##     between, first, last</code></pre>
 <pre><code>## The following objects are masked from &#39;package:stats&#39;:
 ## 
 ##     filter, lag</code></pre>
@@ -909,7 +915,7 @@ dim(cat_tidy)</code></pre>
 the same operation.</p>
 <p><strong>Hint:</strong> Try typing CTRL + SHIFT + M in your
 console.</p>
-<pre class="r"><code>cat_tidy_pipe &lt;- pets %&gt;% filter(Species == &quot;Cat&quot; )
+<pre class="r"><code>cat_tidy_pipe &lt;- pets %&gt;% filter(Species == &quot;Cat&quot;)
 dim(cat_tidy_pipe)</code></pre>
 <pre><code>## [1] 16829     7</code></pre>
 <pre class="r"><code>head(cat_tidy_pipe)</code></pre>
@@ -941,7 +947,8 @@ code?</p>
 
 ## Typically you&#39;ll want to assign the output
 ## of a pipe to a new object
-cat_breeds &lt;- pets %&gt;% filter(Species == &quot;Cat&quot; ) %&gt;%
+cat_breeds &lt;- pets %&gt;%
+  filter(Species == &quot;Cat&quot; ) %&gt;%
   select(Primary.Breed)</code></pre>
 </div>
 <div id="modify-an-existing-variable" class="section level2">
@@ -1051,7 +1058,7 @@ penguins_tidy &lt;- mutate(penguins, body_mass_kg = body_mass_g/1000)
 head(penguins_tidy)
 
 penguins_tidy_pipe &lt;- penguins %&gt;% 
-  mutate(body_mass_kg = body_mass/1000)</code></pre>
+  mutate(body_mass_kg = body_mass_g/1000)</code></pre>
 </div>
 </div>
 <div id="summarize-data" class="section level1">
@@ -1152,11 +1159,11 @@ the <code>tidyverse</code> to be MUCH, MUCH slower than
 <code>aggregate()</code> function.</p>
 <pre class="r"><code>peng_sumby_agg &lt;- aggregate(cbind(flipper_length_mm, body_mass_g) ~
                               sex + species, 
-          data = penguins, 
-          FUN = function(x){
-            c(mean = round(mean(x, na.rm = TRUE), digits = 2),
-              sd = round(sd(x, na.rm = TRUE), digits = 2))
-          })
+                            data = penguins, 
+                            FUN = function(x){
+                              c(mean = round(mean(x, na.rm = TRUE), digits = 2),
+                                sd = round(sd(x, na.rm = TRUE), digits = 2))
+                            })
 peng_sumby_agg</code></pre>
 <pre><code>##      sex   species flipper_length_mm.mean flipper_length_mm.sd body_mass_g.mean
 ## 1 female    Adelie                 187.79                 5.60          3368.84
@@ -1177,8 +1184,8 @@ to add a column of 1s to be summed up before using the
 <code>aggregate()</code> function.</p>
 <pre class="r"><code>penguins$total &lt;- 1
 peng_agg_tot &lt;- aggregate(total ~ sex + species, 
-          data = penguins, 
-          FUN = sum)
+                          data = penguins, 
+                          FUN = sum)
 peng_agg_tot</code></pre>
 <pre><code>##      sex   species total
 ## 1 female    Adelie    73
@@ -1253,40 +1260,48 @@ of functionality available.</p>
 <pre class="r"><code>peng_island_wide &lt;- peng_by_island %&gt;%
   pivot_wider(id_cols = &quot;island&quot;,
               names_from = &quot;year&quot;,
-              values_from = &quot;n&quot;)
+              values_from = &quot;n&quot;,
+              names_prefix = &quot;year_&quot;)
 
 peng_island_wide</code></pre>
 <pre><code>## # A tibble: 3 × 4
 ## # Groups:   island [3]
-##   island    `2007` `2008` `2009`
-##   &lt;fct&gt;      &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
-## 1 Biscoe        44     64     60
-## 2 Dream         46     34     44
-## 3 Torgersen     20     16     16</code></pre>
+##   island    year_2007 year_2008 year_2009
+##   &lt;fct&gt;         &lt;int&gt;     &lt;int&gt;     &lt;int&gt;
+## 1 Biscoe           44        64        60
+## 2 Dream            46        34        44
+## 3 Torgersen        20        16        16</code></pre>
+<pre class="r"><code>aaa &lt;- peng_by_island
+aaa &lt;- aaa[-1,]</code></pre>
 <p>We can use <code>pivot_longer()</code> to turn the wide format data
 back into long format.</p>
 <p>Again, I highly recommend spending time going through all the
 examples in the <code>?pivot_longer</code> help page to better
 understand the array of functionality available.</p>
 <pre class="r"><code>peng_island_long &lt;- peng_island_wide %&gt;% 
-  pivot_longer(cols = contains(&quot;200&quot;),
+  ungroup() %&gt;% 
+  mutate(year_1990 = 1:3) %&gt;% 
+  pivot_longer(cols = starts_with(&quot;year_&quot;),
                names_to = &quot;year&quot;,
-               values_to = &quot;n&quot;)
+               values_to = &quot;n&quot;,
+               names_prefix = &quot;year_&quot;)
 
 peng_island_long</code></pre>
-<pre><code>## # A tibble: 9 × 3
-## # Groups:   island [3]
-##   island    year      n
-##   &lt;fct&gt;     &lt;chr&gt; &lt;int&gt;
-## 1 Biscoe    2007     44
-## 2 Biscoe    2008     64
-## 3 Biscoe    2009     60
-## 4 Dream     2007     46
-## 5 Dream     2008     34
-## 6 Dream     2009     44
-## 7 Torgersen 2007     20
-## 8 Torgersen 2008     16
-## 9 Torgersen 2009     16</code></pre>
+<pre><code>## # A tibble: 12 × 3
+##    island    year      n
+##    &lt;fct&gt;     &lt;chr&gt; &lt;int&gt;
+##  1 Biscoe    2007     44
+##  2 Biscoe    2008     64
+##  3 Biscoe    2009     60
+##  4 Biscoe    1990      1
+##  5 Dream     2007     46
+##  6 Dream     2008     34
+##  7 Dream     2009     44
+##  8 Dream     1990      2
+##  9 Torgersen 2007     20
+## 10 Torgersen 2008     16
+## 11 Torgersen 2009     16
+## 12 Torgersen 1990      3</code></pre>
 </div>
 
 

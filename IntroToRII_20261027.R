@@ -1,9 +1,9 @@
-## ----setup, echo = FALSE-----------------------------------------------------
+## ----setup, echo = FALSE--------------------------------------
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = '~/Dropbox/Workshops/IntrotoRII/')
 
 
-## ----knit_ex, eval = FALSE---------------------------------------------------
+## ----knit_ex, eval = FALSE------------------------------------
 ## data(cars)
 ## summary(cars)
 
@@ -12,29 +12,32 @@ knitr::opts_knit$set(root.dir = '~/Dropbox/Workshops/IntrotoRII/')
 plot(pressure)
 
 
-## ----eval = F----------------------------------------------------------------
+## ----eval = F-------------------------------------------------
 ## install.packages('knitr')
 ## library(knitr)
 ## purl('IntroToRII_20231024.Rmd')
 
 
-## ----eval = F----------------------------------------------------------------
+## ----eval = F-------------------------------------------------
 ## getwd()
 ## setwd("~/Dropbox/Workshops/IntrotoRII/")
 
 
-## ----eval = F----------------------------------------------------------------
+## ----eval = F-------------------------------------------------
 ## knitr::opts_knit$set(root.dir = "~/Dropbox/Workshops/IntrotoRII/")
 
 
-## ----read_csv----------------------------------------------------------------
+## ----read_csv-------------------------------------------------
 ?read.csv
 pets <- read.csv("Seattle_Pet_Licenses.csv")
 write.csv(pets, file = 'Seattle_Pets_copy.csv',
           row.names = FALSE) 
 
+library(data.table)
+fwrite(as.data.table(pets), file = "Seattle_Pets_dt.csv")
 
-## ----save_rda----------------------------------------------------------------
+
+## ----save_rda-------------------------------------------------
 pets_copy <- pets
 names(pets_copy)
 
@@ -47,15 +50,15 @@ names(pets_copy)
 # three_names[grepl("e", three_names)]
 ## The \\ is called an "escape", so that R recognizes the period
 names(pets_copy) <- gsub("\\.", "", names(pets_copy))
-save(pets_copy, file = 'SeattlePets.rda') 
-rm(pets_copy) 
+save(pets_copy, pets, file = 'SeattlePets.rda') 
+rm(pets_copy, pets) 
 
 
-## ----load_rda----------------------------------------------------------------
+## ----load_rda-------------------------------------------------
 load('SeattlePets.rda') 
 
 
-## ----xlsx--------------------------------------------------------------------
+## ----xlsx-----------------------------------------------------
 # install.packages(c("readxl", "writexl"))
 library(readxl)
 library(writexl)
@@ -65,7 +68,7 @@ rm(pets_copy)
 pets_copy <- read_xlsx("SeattlePets.xlsx")
 
 
-## ----read_haven--------------------------------------------------------------
+## ----read_haven-----------------------------------------------
 ## If you have not installed the `haven` pkg use the following
 # install.packages("haven")
 library(haven)
@@ -75,7 +78,7 @@ rm(pets_copy)
 pets_copy <- read_dta(file = "SeattlePets.dta")
 
 
-## ----------------------------------------------------------------------------
+## -------------------------------------------------------------
 is.data.frame(pets)  
 is.data.frame(pets_copy)
 rm(pets_copy)
@@ -88,34 +91,34 @@ pets_tib <- as_tibble(pets)
 is.data.frame(pets_tib)
 
 
-## ----head--------------------------------------------------------------------
+## ----head-----------------------------------------------------
 head(pets)
 head(pets_tib)
 
 
-## ----names-------------------------------------------------------------------
+## ----names----------------------------------------------------
 # VARIABLE NAMES
 names(pets)
 colnames(pets)
 
 
-## ----rownames, eval = F------------------------------------------------------
+## ----rownames, eval = F---------------------------------------
 ## rownames(pets)
 
 
-## ----dim---------------------------------------------------------------------
+## ----dim------------------------------------------------------
 dim(pets) # this gives rows and then columns (n X p)
 nrow(pets)
 ncol(pets)
 length(pets) # NOT ADVISED TO USE WITH MATRICES OR DATA FRAMES
 
 
-## ----summary-----------------------------------------------------------------
+## ----summary--------------------------------------------------
 summary(pets)
 str(pets)
 
 
-## ----summary_peng------------------------------------------------------------
+## ----summary_peng---------------------------------------------
 # install.packages("palmerpenguins")
 ## Load the penguins dataset
 library(palmerpenguins)
@@ -124,7 +127,7 @@ summary(penguins)
 str(penguins)
 
 
-## ----echo = T, eval = F------------------------------------------------------
+## ----echo = T, eval = F---------------------------------------
 ## pets$Species
 ## ## Note what comes before the , specifies ROW selection
 ## ## what comes after the , specifies COLUMN selection
@@ -135,11 +138,11 @@ str(penguins)
 ## pets[1:10, c("Species", "Primary.Breed")]
 
 
-## ----echo = T, eval = F------------------------------------------------------
+## ----echo = T, eval = F---------------------------------------
 ## select(pets, Species)
 
 
-## ----echo = T, eval = T------------------------------------------------------
+## ----echo = T, eval = T---------------------------------------
 head(pets)
 ## table() is a handy base R function
 ## for counting the frequency of unique values in a vector
@@ -151,33 +154,34 @@ dim(cat_base)
 head(cat_base)
 
 
-## ----echo = TRUE, eval = FALSE-----------------------------------------------
+## ----echo = TRUE, eval = FALSE--------------------------------
 ## pets$Species == "Cat
 
 
-## ----echo = T, eval = TRUE---------------------------------------------------
+## ----echo = T, eval = TRUE------------------------------------
 cat_tidy <- filter(pets, Species == "Cat")
 dim(cat_tidy)
 head(cat_tidy)
 
 
-## ----echo = T, eval = TRUE---------------------------------------------------
-cat_tidy_pipe <- pets %>% filter(Species == "Cat" )
+## ----echo = T, eval = TRUE------------------------------------
+cat_tidy_pipe <- pets %>% filter(Species == "Cat")
 dim(cat_tidy_pipe)
 head(cat_tidy_pipe)
 
 
-## ----echo = T, eval = F------------------------------------------------------
+## ----echo = T, eval = F---------------------------------------
 ## pets %>% filter(Species == "Cat" ) %>%
 ##   select(Primary.Breed)
 ## 
 ## ## Typically you'll want to assign the output
 ## ## of a pipe to a new object
-## cat_breeds <- pets %>% filter(Species == "Cat" ) %>%
+## cat_breeds <- pets %>%
+##   filter(Species == "Cat" ) %>%
 ##   select(Primary.Breed)
 
 
-## ----factor_base, eval = TRUE, echo = TRUE-----------------------------------
+## ----factor_base, eval = TRUE, echo = TRUE--------------------
 summary(pets)
 class(pets$Species)
 
@@ -190,7 +194,7 @@ pets_base$Species <- factor(pets_base$Species,
 summary(pets_base)
 
 
-## ----factor_tidy-------------------------------------------------------------
+## ----factor_tidy----------------------------------------------
 pets_tidy <- pets %>% 
   mutate(Species = factor(Species, levels = c("Cat", "Dog", "Goat", "Pig")),
          Primary.Breed = as.factor(Primary.Breed))
@@ -200,7 +204,7 @@ summary(pets_tidy)
 # length(unique(pets$Primary.Breed))
 
 
-## ----echo = T, eval = T------------------------------------------------------
+## ----echo = T, eval = T---------------------------------------
 ## Make a copy of the dataset we will manipulate 
 penguins_base <- penguins
 head(penguins_base)
@@ -210,16 +214,16 @@ penguins_base$body_mass_kg <- penguins_base$body_mass_g/1000
 head(penguins_base)
 
 
-## ----echo = T, eval = F------------------------------------------------------
+## ----echo = T, eval = F---------------------------------------
 ## # dplyr
 ## penguins_tidy <- mutate(penguins, body_mass_kg = body_mass_g/1000)
 ## head(penguins_tidy)
 ## 
 ## penguins_tidy_pipe <- penguins %>%
-##   mutate(body_mass_kg = body_mass/1000)
+##   mutate(body_mass_kg = body_mass_g/1000)
 
 
-## ----sumfns------------------------------------------------------------------
+## ----sumfns---------------------------------------------------
 ## What is the output of 
 # min(penguins$flipper_length_mm)
 min(penguins$flipper_length_mm, na.rm = TRUE)
@@ -236,7 +240,7 @@ quantile(penguins$flipper_length_mm, probs = 0.75, na.rm = TRUE)
 quantile(penguins$flipper_length_mm, probs = c(0.25,0.5,0.75), na.rm = TRUE)
 
 
-## ----echo = T, eval = T------------------------------------------------------
+## ----echo = T, eval = T---------------------------------------
 peng_sum_base <- data.frame(flip_length_mean = mean(penguins$flipper_length_mm,
                                                     na.rm = TRUE),
                             flip_length_sd = sd(penguins$flipper_length_mm,
@@ -247,7 +251,7 @@ head(peng_sum_base)
 round(peng_sum_base, digits = 2)
 
 
-## ----peng_sum_agg------------------------------------------------------------
+## ----peng_sum_agg---------------------------------------------
 
 ## Column names might have to be changed afterwards
 ## lefthand side of formula is the variable you want to make summaries of
@@ -259,7 +263,7 @@ peng_sum_agg <- aggregate(flipper_length_mm ~ 1,
 peng_sum_agg
 
 
-## ----peng_sum_tidy, echo = T ,eval =F----------------------------------------
+## ----peng_sum_tidy, echo = T ,eval =F-------------------------
 ## peng_sum_tidy <- penguins %>%
 ##   summarize(flip_length_mean = mean(flipper_length_mm, na.rm = TRUE),
 ##             flip_length_sd = sd(flipper_length_mm, na.rm = TRUE))
@@ -267,28 +271,28 @@ peng_sum_agg
 ## peng_sum_tidy
 
 
-## ----sum_across--------------------------------------------------------------
+## ----sum_across-----------------------------------------------
 penguins %>% 
   summarize(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))
 
 
-## ----echo = T, eval = T------------------------------------------------------
+## ----echo = T, eval = T---------------------------------------
 
 peng_sumby_agg <- aggregate(cbind(flipper_length_mm, body_mass_g) ~
                               sex + species, 
-          data = penguins, 
-          FUN = function(x){
-            c(mean = round(mean(x, na.rm = TRUE), digits = 2),
-              sd = round(sd(x, na.rm = TRUE), digits = 2))
-          })
+                            data = penguins, 
+                            FUN = function(x){
+                              c(mean = round(mean(x, na.rm = TRUE), digits = 2),
+                                sd = round(sd(x, na.rm = TRUE), digits = 2))
+                            })
 peng_sumby_agg
 
 
-## ----agg_tot-----------------------------------------------------------------
+## ----agg_tot--------------------------------------------------
 penguins$total <- 1
 peng_agg_tot <- aggregate(total ~ sex + species, 
-          data = penguins, 
-          FUN = sum)
+                          data = penguins, 
+                          FUN = sum)
 peng_agg_tot
 
 ## Check our work
@@ -297,7 +301,7 @@ peng_agg_tot
 table(penguins$sex, penguins$species, useNA = "ifany")
 
 
-## ----group_by, echo = T, eval = F--------------------------------------------
+## ----group_by, echo = T, eval = F-----------------------------
 ## peng_sum_tidy <- penguins %>%
 ##   group_by(species, sex) %>%
 ##   summarize(total = n(),
@@ -310,7 +314,7 @@ table(penguins$sex, penguins$species, useNA = "ifany")
 ## peng_sum_tidy
 
 
-## ----peng_spec_isl-----------------------------------------------------------
+## ----peng_spec_isl--------------------------------------------
 peng_by_island <- penguins %>% 
   group_by(island, year) %>%
   summarize(n = n())
@@ -318,20 +322,30 @@ peng_by_island <- penguins %>%
 head(peng_by_island)  
 
 
-## ----peng_spec_isl_wide------------------------------------------------------
+## ----peng_spec_isl_wide---------------------------------------
 peng_island_wide <- peng_by_island %>%
   pivot_wider(id_cols = "island",
               names_from = "year",
-              values_from = "n")
+              values_from = "n",
+              names_prefix = "year_")
 
 peng_island_wide
 
 
-## ----penc_spec_isl_long------------------------------------------------------
+aaa <- peng_by_island
+aaa <- aaa[-1,]
+
+
+
+
+## ----penc_spec_isl_long---------------------------------------
 peng_island_long <- peng_island_wide %>% 
-  pivot_longer(cols = contains("200"),
+  ungroup() %>% 
+  mutate(year_1990 = 1:3) %>% 
+  pivot_longer(cols = starts_with("year_"),
                names_to = "year",
-               values_to = "n")
+               values_to = "n",
+               names_prefix = "year_")
 
 peng_island_long
 
