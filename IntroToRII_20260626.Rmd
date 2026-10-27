@@ -12,7 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = '~/Dropbox/Workshops/IntrotoRII/')
 ```
 
-# Getting started 
+# Getting started
+
 ## Download R
 
 What is `R`? Open-source, free, stastical computing software.
@@ -31,12 +32,12 @@ Go to the [RStudio website](https://rstudio.com/products/rstudio/download/#downl
 
 ## Rstudio Layout
 
-Rstudio has four main panels that allow you to organize your code and have a better user experience developing and using `R` code: 
+Rstudio has four main panels that allow you to organize your code and have a better user experience developing and using `R` code:
 
-  * Source panel: where scripts are edited
-  * Console panel: where code is executed and output is printed
-  * Environment panel: where objects are stored
-  * Files/Plots/Help: navigate files and folders, view plots, read and access help documentation for packages and functions
+-   Source panel: where scripts are edited
+-   Console panel: where code is executed and output is printed
+-   Environment panel: where objects are stored
+-   Files/Plots/Help: navigate files and folders, view plots, read and access help documentation for packages and functions
 
 ![](Figures/RstudioPanel.png)
 
@@ -59,27 +60,24 @@ data(cars)
 summary(cars)
 ```
 
-
 A handy Rstudio/R Markdown cheatsheet can be found here <https://rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf>. It gives summaries of the most used Markdown syntax aspects (e.g. headings/subheadings, bullet lists, numbered lists), the types of files R Markdown can create and examples of how R and R Markdown interact.
 
 This is an example of an an R Markdown file that will be used to create a .html file. This is the best option if you don't have much math to write or do not need to share a .pdf.
 
 ## Why use R Markdown?
 
-* Reproducibility: the results in the final come directly from the code include in the file
-* Replicability: a collaborator or another researcher or student can directly replicate your analysis using the code in the chunks and there is room for much more commentary than in a regular script file.
-* Debugging: every time you knit a .Rmd file, it executes the code from start to finish in a clean environment. it will not compile if there are errors in the \tt{R} code, the Markdown syntax or, if we are making a .pdf, the \LaTeX code.
+-   Reproducibility: the results in the final come directly from the code include in the file
+-   Replicability: a collaborator or another researcher or student can directly replicate your analysis using the code in the chunks and there is room for much more commentary than in a regular script file.
+-   Debugging: every time you knit a .Rmd file, it executes the code from start to finish in a clean environment. it will not compile if there are errors in the \tt{R} code, the Markdown syntax or, if we are making a .pdf, the \\LaTeX code.
 
 ## Chunks
 
 While not nicely named, R code can be included in an R Markdown file in what we call a "chunk". Properties of the chunk are adjusted within the curly braces. The cheatsheet under the heading "Embed code with knitr syntax". The most common arguments I use are
 
-
-
-  *  `echo`: logical argument determining whether the code in the subsequent chunk will be printed in the document created
-  *  `eval`: logical argument determining whether or not the code in the subsequent chunk will be evaluated by `{R}$ or just printed in the document.
-  *  `fig.cap`: provides a caption for a figure
-  *  `fig.align`: aligns figure on "left", "right" or "center"
+-   `echo`: logical argument determining whether the code in the subsequent chunk will be printed in the document created
+-   `eval`: logical argument determining whether or not the code in the subsequent chunk will be evaluated by \`{R}\$ or just printed in the document.
+-   `fig.cap`: provides a caption for a figure
+-   `fig.align`: aligns figure on "left", "right" or "center"
 
 ```{r pressure, echo=FALSE, fig.align = 'center', fig.cap = "For example, this figure was created with `echo = FALSE` and `eval = TRUE`."}
 plot(pressure)
@@ -102,6 +100,7 @@ purl('IntroToRII_20231024.Rmd')
 All of this is available on the cheat sheet, but here we will briefly cover basic text and document formatting.
 
 ### Bold/Italics
+
 Use asterisks (`*`) around a word or phrase to make it *italicized*.
 
 Use double asterisks (`**`) around a word or phrase to make it **bold**.
@@ -125,6 +124,7 @@ y = x.
 # Reading and Writing Files
 
 ## The Working Directory
+
 To open files in `R` we need to specify the directory our data files are stored in. There are two ways to do this: using code or via the dropdown menus (this will vary by Windows or Mac).
 
 Rstudio shows you what your current working directory is by looking at the file path at the top of the Console pane. **Note:** `~` refers to your home directory.
@@ -143,6 +143,7 @@ setwd("~/Dropbox/Workshops/IntrotoRII/")
 ```
 
 However, the `setwd()` function is insufficient for .Rmd files. To set the working directory in your .Rmd document, you will need to include the following line of code:
+
 ```{r, eval = F}
 knitr::opts_knit$set(root.dir = "~/Dropbox/Workshops/IntrotoRII/")
 ```
@@ -153,11 +154,14 @@ There are many ways to read in files to `R`, depending on the file type.
 
 **Note:** Remember to specify `row.names = FALSE` when using `write.csv()`. Otherwise, the next time you use `read.csv()` to load that file, it will contain an extra column with the name `X` whose contents are the row names of the object saved using `write.csv()`.
 
-```{r read_csv} 
+```{r read_csv}
 ?read.csv
 pets <- read.csv("Seattle_Pet_Licenses.csv")
 write.csv(pets, file = 'Seattle_Pets_copy.csv',
           row.names = FALSE) 
+
+library(data.table)
+fwrite(as.data.table(pets), file = "Seattle_Pets_dt.csv")
 ```
 
 ## Read and Write R data files, .rda
@@ -175,8 +179,8 @@ names(pets_copy)
 # three_names[grepl("e", three_names)]
 ## The \\ is called an "escape", so that R recognizes the period
 names(pets_copy) <- gsub("\\.", "", names(pets_copy))
-save(pets_copy, file = 'SeattlePets.rda') 
-rm(pets_copy) 
+save(pets_copy, pets, file = 'SeattlePets.rda') 
+rm(pets_copy, pets) 
 ```
 
 What is the name of the data set that loaded by the line of code below?
@@ -200,6 +204,7 @@ pets_copy <- read_xlsx("SeattlePets.xlsx")
 ## Read and Write Stata files, .dta
 
 To load Stata data files we either need to use the package `foreign` or `haven`.
+
 ```{r read_haven}
 ## If you have not installed the `haven` pkg use the following
 # install.packages("haven")
@@ -215,6 +220,7 @@ pets_copy <- read_dta(file = "SeattlePets.dta")
 Try Google-ing! Chances are there's a package for the file type of your choice. I've loaded ASCII files, .txt, .xls, and .fst files among others.
 
 # Exploring Data
+
 ## `data.frame` and `tibble`
 
 A `data.frame` is a type of `R` object used for storing vectors of information who are of different classes, i.e. one column can be numeric, another can be a character, another can be a factor. The `tibble` is a newer object class akin to a `data.frame` in the `tidyverse`. Both are actually special classes of `list`s.
@@ -237,17 +243,20 @@ is.data.frame(pets_tib)
 ```
 
 ## The First Look
+
 There are certain functions I use **every time** I load a new dataset into `R`. I might also use them, even if I am familiar with the data, to make sure everything has been loaded properly.
 
 These functions quickly give me an idea of what a single row of data looks like, how many observations (rows) and variables (columns) the data contain, what class each column is, and whether there are any missing or suspect values in a column.
 
 View first 6 rows.
+
 ```{r head}
 head(pets)
 head(pets_tib)
 ```
 
 View variable names.
+
 ```{r names}
 # VARIABLE NAMES
 names(pets)
@@ -255,11 +264,13 @@ colnames(pets)
 ```
 
 View row names, which default to row numbers.
+
 ```{r rownames, eval = F}
 rownames(pets)
 ```
 
 Find dimensions.
+
 ```{r dim}
 dim(pets) # this gives rows and then columns (n X p)
 nrow(pets)
@@ -270,6 +281,7 @@ length(pets) # NOT ADVISED TO USE WITH MATRICES OR DATA FRAMES
 Summarize all columns in the dataset.
 
 The `summary()` function works really well for all class types EXCEPT `character`, which the `str()` function works better for.
+
 ```{r summary}
 summary(pets)
 str(pets)
@@ -287,12 +299,13 @@ str(penguins)
 ```
 
 # Data Manipulation
+
 We may want to select or view partial data frames.
 
 Whether you go down the base `R` or `tidyr`/`dplyr` path is up to you, but I want you to have some familiarity with both.
 
-  * Vignette base `R` vs `tidyverse`: \url{https://tavareshugo.github.io/data_carpentry_extras/base-r_tidyverse_equivalents/base-r_tidyverse_equivalents.html}
-  * `tidyr`, `dplyr` cheat sheet: https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf
+-   Vignette base `R` vs `tidyverse`: \url{https://tavareshugo.github.io/data_carpentry_extras/base-r_tidyverse_equivalents/base-r_tidyverse_equivalents.html}
+-   `tidyr`, `dplyr` cheat sheet: <https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf>
 
 ## Selecting variables
 
@@ -316,7 +329,8 @@ select(pets, Species)
 ```
 
 ## Subsetting data
-In base `R`, we subset data using Boolean logic tests. Here is a new `data.frame` of all the observations whose species is ``Cat''.
+
+In base `R`, we subset data using Boolean logic tests. Here is a new `data.frame` of all the observations whose species is \`\`Cat''.
 
 ```{r, echo = T, eval = T}
 head(pets)
@@ -330,8 +344,8 @@ dim(cat_base)
 head(cat_base)
 ```
 
-
 **Question:** What do you think the following line of code does on it's own?
+
 ```{r, echo = TRUE, eval = FALSE}
 pets$Species == "Cat
 ```
@@ -344,19 +358,19 @@ dim(cat_tidy)
 head(cat_tidy)
 ```
 
-We can also use what is called a "pipe" (`%>%`) to do the same operation. 
+We can also use what is called a "pipe" (`%>%`) to do the same operation.
 
 **Hint:** Try typing CTRL + SHIFT + M in your console.
 
 ```{r, echo = T, eval = TRUE}
-cat_tidy_pipe <- pets %>% filter(Species == "Cat" )
+cat_tidy_pipe <- pets %>% filter(Species == "Cat")
 dim(cat_tidy_pipe)
 head(cat_tidy_pipe)
 ```
 
 The pipe (`%>%`) is most useful when we want to apply several sequential functions or operations to a `data.frame` or `tibble`.
 
-**Note:** you must link the sequential functions by `%>%`. To make your code clean you probably want to use multiple lines, but the `%>%` must come at the end of a line or `R` will end your operation. 
+**Note:** you must link the sequential functions by `%>%`. To make your code clean you probably want to use multiple lines, but the `%>%` must come at the end of a line or `R` will end your operation.
 
 **Question:** What happens if you run this chunk of code?
 
@@ -366,7 +380,8 @@ pets %>% filter(Species == "Cat" ) %>%
 
 ## Typically you'll want to assign the output
 ## of a pipe to a new object
-cat_breeds <- pets %>% filter(Species == "Cat" ) %>%
+cat_breeds <- pets %>%
+  filter(Species == "Cat" ) %>%
   select(Primary.Breed)
 ```
 
@@ -374,7 +389,7 @@ cat_breeds <- pets %>% filter(Species == "Cat" ) %>%
 
 Modifying an existing variable is something we don't want to do willy-nilly! Be wary of modifications that may fundamentally alter the data. In those cases, I suggest making new variables (See next section.)
 
-However, sometimes we may want to do something like coerce a column to a new class. 
+However, sometimes we may want to do something like coerce a column to a new class.
 
 In base `R` we make use of the `$` operator. Recall the way `summary()` treated all the `character` variables of the Seattle Pet Licenses data. Let's coerce a column to be class `factor`!
 
@@ -425,17 +440,16 @@ penguins_tidy <- mutate(penguins, body_mass_kg = body_mass_g/1000)
 head(penguins_tidy)
 
 penguins_tidy_pipe <- penguins %>% 
-  mutate(body_mass_kg = body_mass/1000)
+  mutate(body_mass_kg = body_mass_g/1000)
 ```
 
 # Summarize Data
 
-Often we want to present summaries of our data and not the whole thing! (Think, Table 1!) 
+Often we want to present summaries of our data and not the whole thing! (Think, Table 1!)
 
 The base `R` way of doing things is a bit tedious, but I have found that sometimes it can be much, much faster than the tidyverse way. So, it's important to go through both.
 
 If we want to get summary statistics for a single variable over the entire dataset, and not by subgroup, this is straightforward in base `R` using functions like `mean()`, `sd()`, `median()`, `min()`, `max()`, or `quantile()`.
-
 
 ```{r sumfns}
 ## What is the output of 
@@ -484,6 +498,7 @@ peng_sum_agg
 ```
 
 In the Hadley-verse or tidyverse, we use the `summarise()` or `summarize()` function.
+
 ```{r peng_sum_tidy, echo = T ,eval =F}
 peng_sum_tidy <- penguins %>% 
   summarize(flip_length_mean = mean(flipper_length_mm, na.rm = TRUE),
@@ -506,15 +521,16 @@ Often we'll want to create summary statistics by some categorical variable withi
 **Note:** In many cases it's inconsequential whether you use base `R` or the `tidyverse`. Often `tidyr` and `dplyr` functions are a bit faster than `R`, but I find the `summarise`function in the `tidyverse` to be MUCH, MUCH slower than `aggregate` in base `R`.
 
 In base `R` we can do this with the `aggregate()` function.
+
 ```{r, echo = T, eval = T}
 
 peng_sumby_agg <- aggregate(cbind(flipper_length_mm, body_mass_g) ~
                               sex + species, 
-          data = penguins, 
-          FUN = function(x){
-            c(mean = round(mean(x, na.rm = TRUE), digits = 2),
-              sd = round(sd(x, na.rm = TRUE), digits = 2))
-          })
+                            data = penguins, 
+                            FUN = function(x){
+                              c(mean = round(mean(x, na.rm = TRUE), digits = 2),
+                                sd = round(sd(x, na.rm = TRUE), digits = 2))
+                            })
 peng_sumby_agg
 ```
 
@@ -523,8 +539,8 @@ To get sample sizes by categories in base `R`, we'll need to add a column of 1s 
 ```{r agg_tot}
 penguins$total <- 1
 peng_agg_tot <- aggregate(total ~ sex + species, 
-          data = penguins, 
-          FUN = sum)
+                          data = penguins, 
+                          FUN = sum)
 peng_agg_tot
 
 ## Check our work
@@ -550,7 +566,7 @@ peng_sum_tidy
 
 # Wide & Long Data Formats
 
-There are two standard formats for a dataset. **Wide** format refers to a dataset that has exactly one row per subject with all data in separate columns. **Long** format data has exactly one row per observation. There's little importance in distinguishing between these two unless we have repeated measurements for each subject. 
+There are two standard formats for a dataset. **Wide** format refers to a dataset that has exactly one row per subject with all data in separate columns. **Long** format data has exactly one row per observation. There's little importance in distinguishing between these two unless we have repeated measurements for each subject.
 
 For example, if we were to look at heights measured at patient visits over time, the **wide** format would have one row per patient and column names may look like "ht_first_visit", "ht_second_visit", and so on. The **long** format would have a row for every patient/visit combination and one column name of observations called "height".
 
@@ -574,9 +590,16 @@ I highly recommend spending time going through all the examples in the `?pivot_w
 peng_island_wide <- peng_by_island %>%
   pivot_wider(id_cols = "island",
               names_from = "year",
-              values_from = "n")
+              values_from = "n",
+              names_prefix = "year_")
 
 peng_island_wide
+
+
+aaa <- peng_by_island
+aaa <- aaa[-1,]
+
+
 ```
 
 We can use `pivot_longer()` to turn the wide format data back into long format.
@@ -585,9 +608,12 @@ Again, I highly recommend spending time going through all the examples in the `?
 
 ```{r penc_spec_isl_long}
 peng_island_long <- peng_island_wide %>% 
-  pivot_longer(cols = contains("200"),
+  ungroup() %>% 
+  mutate(year_1990 = 1:3) %>% 
+  pivot_longer(cols = starts_with("year_"),
                names_to = "year",
-               values_to = "n")
+               values_to = "n",
+               names_prefix = "year_")
 
 peng_island_long
 ```
